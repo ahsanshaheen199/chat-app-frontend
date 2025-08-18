@@ -1,6 +1,7 @@
 import { twMerge } from "tailwind-merge";
 
 type FormInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  ref?: React.Ref<HTMLInputElement>;
   isError?: boolean;
 };
 
@@ -8,10 +9,12 @@ export function FormInput({
   type,
   isError = false,
   className,
+  ref,
   ...rest
 }: FormInputProps) {
   return (
     <input
+      ref={ref}
       {...rest}
       type={type}
       className={twMerge(
