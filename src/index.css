@@ -1,0 +1,18 @@
+@import "./assets/css/fonts.css";
+@import "tailwindcss";
+@plugin "@tailwindcss/forms";
+
+@theme {
+  --color-heading-primary: #11142d;
+  --color-text-secondary: #808191;
+  --color-bg-primary: #475be8;
+}
+
+@layer base {
+  body {
+    font-family: "Manrope", sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    color: var(--color-text-secondary);
+  }
+}
