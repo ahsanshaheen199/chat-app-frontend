@@ -1,6 +1,10 @@
 import { useEffect, useRef, useState } from 'react';
 import { FormInput } from '../components/form/input';
 import { Button } from '../components/form/button';
+import appAxios from '../lib/axios';
+import { authProvider } from '../features/auth';
+import { useNavigate } from 'react-router';
+import type { User } from '../types';
 
 const CODE_LENGTH = 6;
 
@@ -9,6 +13,9 @@ export function VerifyEmailPage() {
 	const [inputCode, setInputCode] = useState<string[]>(
 		Array.from({ length: CODE_LENGTH }, () => '')
 	);
+	const [showError, setShowError] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+	const navigate = useNavigate();
 
 	const handleInputChange = (
 		e: React.ChangeEvent<HTMLInputElement>,
@@ -45,11 +52,49 @@ export function VerifyEmailPage() {
 		inputRef.current[0]?.focus();
 	}, []);
 
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		setIsLoading(true);
+		try {
+			const response = await appAxios.post<{ data: { user: User } }>('/auth/verify-email', {
+				code: inputCode.join(''),
+			});
+
+			authProvider.user = response.data.data.user;
+			authProvider.isAuthenticated = true;
+			localStorage.setItem('user', JSON.stringify(response.data.data.user));
+
+			navigate('/');
+		} catch (error) {
+			console.error(error);
+			setShowError(true);
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	useEffect(() => {
+		let errorTimeout: NodeJS.Timeout;
+		if (showError) {
+			errorTimeout = setTimeout(() => {
+				setShowError(false);
+			}, 5000);
+		}
+		return () => clearTimeout(errorTimeout);
+	}, [showError]);
+
 	return (
 		<div className="grid min-h-svh lg:grid-cols-2">
 			<div className="flex flex-col gap-4 p-6 md:p-10">
 				<div className="flex flex-1 items-center justify-center">
 					<div className="w-full max-w-sm">
+						{showError && (
+							<div className="mb-5 flex w-full justify-between rounded-lg border border-[#571B23]/10 bg-[rgba(255,229,229,1)] p-5">
+								<div className="flex flex-1 flex-col">
+									<p className="text-sm font-semibold text-[#9F2225]">Invalid code</p>
+								</div>
+							</div>
+						)}
 						<h1 className="text-heading-primary text-3xl font-bold">
 							Verify your email
 						</h1>
@@ -57,7 +102,7 @@ export function VerifyEmailPage() {
 							Enter the code sent to your email to verify your
 							email.
 						</p>
-						<form className="mt-8">
+						<form onSubmit={handleSubmit} className="mt-8">
 							<div className="mb-8 flex gap-x-4">
 								{Array.from({ length: CODE_LENGTH }).map(
 									(_, index) => (
@@ -83,7 +128,9 @@ export function VerifyEmailPage() {
 								)}
 							</div>
 							<div>
-								<Button className="w-full">Verify Email</Button>
+								<Button type="submit" isLoading={isLoading} className="w-full" disabled={isLoading}>
+									{isLoading ? 'Verifying...' : 'Verify Email'}
+								</Button>
 							</div>
 						</form>
 					</div>

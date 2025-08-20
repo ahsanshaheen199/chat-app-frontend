@@ -2,6 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router';
 import { LoginPage } from './pages/login';
 import { SignupPage } from './pages/signup';
 import { VerifyEmailPage } from './pages/verify-email';
+import { signupAction } from './features/signup/action';
 
 function App() {
 	const router = createBrowserRouter([
@@ -16,6 +17,7 @@ function App() {
 		{
 			path: '/signup',
 			element: <SignupPage />,
+			action: signupAction,
 		},
 		{
 			path: '/verify-email',
