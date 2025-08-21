@@ -56,13 +56,19 @@ export function VerifyEmailPage() {
 		e.preventDefault();
 		setIsLoading(true);
 		try {
-			const response = await appAxios.post<{ data: { user: User } }>('/auth/verify-email', {
-				code: inputCode.join(''),
-			});
+			const response = await appAxios.post<{ data: { user: User } }>(
+				'/api/auth/verify-email',
+				{
+					code: inputCode.join(''),
+				}
+			);
 
 			authProvider.user = response.data.data.user;
 			authProvider.isAuthenticated = true;
-			localStorage.setItem('user', JSON.stringify(response.data.data.user));
+			localStorage.setItem(
+				'user',
+				JSON.stringify(response.data.data.user)
+			);
 
 			navigate('/');
 		} catch (error) {
@@ -91,7 +97,9 @@ export function VerifyEmailPage() {
 						{showError && (
 							<div className="mb-5 flex w-full justify-between rounded-lg border border-[#571B23]/10 bg-[rgba(255,229,229,1)] p-5">
 								<div className="flex flex-1 flex-col">
-									<p className="text-sm font-semibold text-[#9F2225]">Invalid code</p>
+									<p className="text-sm font-semibold text-[#9F2225]">
+										Invalid code
+									</p>
 								</div>
 							</div>
 						)}
@@ -128,8 +136,15 @@ export function VerifyEmailPage() {
 								)}
 							</div>
 							<div>
-								<Button type="submit" isLoading={isLoading} className="w-full" disabled={isLoading}>
-									{isLoading ? 'Verifying...' : 'Verify Email'}
+								<Button
+									type="submit"
+									isLoading={isLoading}
+									className="w-full"
+									disabled={isLoading}
+								>
+									{isLoading
+										? 'Verifying...'
+										: 'Verify Email'}
 								</Button>
 							</div>
 						</form>

@@ -6,6 +6,7 @@ const appAxios = Axios.create({
 		Accept: 'application/json',
 		'content-type': 'application/json',
 	},
+	withCredentials: true,
 });
 
 export default appAxios;
