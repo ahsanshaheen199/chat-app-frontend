@@ -12,6 +12,7 @@ import { logoutAction } from './features/logout/action';
 import { loginAction } from './features/login/action';
 import { forgotPasswordAction } from './features/forgot-password/action';
 import { resetPasswordAction } from './features/reset-password/action';
+import { MessagesPage } from './pages/messages';
 
 function App() {
 	const router = createBrowserRouter([
@@ -54,6 +55,10 @@ function App() {
 		{
 			path: '/logout',
 			action: logoutAction,
+		},
+		{
+			path: '/messages',
+			element: <MessagesPage />,
 		},
 	]);
 
