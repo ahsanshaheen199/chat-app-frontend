@@ -68,7 +68,7 @@ export function HeaderTop() {
 
 								<fetcher.Form method="post" action="/logout">
 									<button
-										className="group-hover/item:text-bg-primary flex-1 text-sm font-medium"
+										className="group-hover/item:text-bg-primary flex-1 cursor-pointer text-sm font-medium"
 										type="submit"
 										disabled={isLoggingOut}
 									>

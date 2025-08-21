@@ -1,14 +1,50 @@
-import { Link } from 'react-router';
+import { Form, Link, useActionData, useNavigation } from 'react-router';
 import { FormInput } from '../components/form/input';
 import { FormLabel } from '../components/form/label';
 import { Button } from '../components/form/button';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 export function LoginPage() {
+	const action = useActionData() as {
+		error?: string;
+		errors?: Record<string, string[]>;
+	};
+	const [errors, setErrors] = useState<Record<string, string[]>>({});
+	const [showError, setShowError] = useState(false);
+
+	const navigation = useNavigation();
+	const isLoading = navigation.state === 'submitting';
+
+	useEffect(() => {
+		let errorTimeout: NodeJS.Timeout;
+		if (action?.error) {
+			if (action.errors) {
+				setErrors(action.errors);
+			}
+			setShowError(true);
+			errorTimeout = setTimeout(() => {
+				setShowError(false);
+			}, 5000);
+		}
+
+		return () => clearTimeout(errorTimeout);
+	}, [action]);
+
 	return (
 		<div className="grid min-h-svh lg:grid-cols-2">
 			<div className="flex flex-col gap-4 p-6 md:p-10">
 				<div className="flex flex-1 items-center justify-center">
 					<div className="w-full max-w-sm">
+						{showError && action?.error && (
+							<div className="mb-5 flex w-full justify-between rounded-lg border border-[#571B23]/10 bg-[rgba(255,229,229,1)] p-5">
+								<div className="flex flex-1 flex-col">
+									<p className="text-sm font-semibold text-[#9F2225]">
+										{action?.error}
+									</p>
+								</div>
+							</div>
+						)}
 						<h1 className="text-heading-primary text-3xl font-bold">
 							Log in to your account
 						</h1>
@@ -16,7 +52,7 @@ export function LoginPage() {
 							Enter your email and password to log in to your
 							account.
 						</p>
-						<form className="mt-8">
+						<Form method="post" action="/login" className="mt-8">
 							<div className="mb-4 flex flex-col gap-y-2">
 								<FormLabel
 									htmlFor="email"
@@ -28,7 +64,19 @@ export function LoginPage() {
 									id="email"
 									placeholder="name@example.com"
 									type="email"
+									name="email"
+									isError={!!errors.email}
+									onChange={() => {
+										const newErrors = { ...errors };
+										delete newErrors.email;
+										setErrors(newErrors);
+									}}
 								/>
+								{errors.email && (
+									<p className="text-sm text-red-500">
+										{errors.email}
+									</p>
+								)}
 							</div>
 							<div className="mb-5 flex flex-col gap-y-2">
 								<FormLabel
@@ -47,10 +95,29 @@ export function LoginPage() {
 									id="password"
 									placeholder="********"
 									type="password"
+									name="password"
+									isError={!!errors.password}
+									onChange={() => {
+										const newErrors = { ...errors };
+										delete newErrors.password;
+										setErrors(newErrors);
+									}}
 								/>
+								{errors.password && (
+									<p className="text-sm text-red-500">
+										{errors.password}
+									</p>
+								)}
 							</div>
 							<div>
-								<Button className="w-full">Log in</Button>
+								<Button
+									isLoading={isLoading}
+									className="w-full"
+									disabled={isLoading}
+									type="submit"
+								>
+									{isLoading ? 'Logging in...' : 'Log in'}
+								</Button>
 							</div>
 							<div className="mt-4">
 								<p className="text-center text-sm">
@@ -63,7 +130,7 @@ export function LoginPage() {
 									</Link>
 								</p>
 							</div>
-						</form>
+						</Form>
 					</div>
 				</div>
 			</div>

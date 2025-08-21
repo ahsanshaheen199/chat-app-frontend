@@ -7,6 +7,7 @@ import { signupLoader } from './features/signup/loader';
 import { dashboardLoader } from './features/dashboard/loader';
 import { DashboardPage } from './pages/dashboard';
 import { logoutAction } from './features/logout/action';
+import { loginAction } from './features/login/action';
 
 function App() {
 	const router = createBrowserRouter([
@@ -23,6 +24,7 @@ function App() {
 			path: '/login',
 			element: <LoginPage />,
 			loader: signupLoader,
+			action: loginAction,
 		},
 		{
 			path: '/signup',

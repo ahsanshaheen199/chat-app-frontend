@@ -5,7 +5,10 @@ import { Form, Link, useActionData, useNavigation } from 'react-router';
 import { useEffect, useState } from 'react';
 
 export function SignupPage() {
-	const action = useActionData() as { error?: string, errors?: Record<string, string[]> };
+	const action = useActionData() as {
+		error?: string;
+		errors?: Record<string, string[]>;
+	};
 	const [errors, setErrors] = useState<Record<string, string[]>>({});
 	const [showError, setShowError] = useState(false);
 
@@ -33,7 +36,9 @@ export function SignupPage() {
 						{showError && action?.error && (
 							<div className="mb-5 flex w-full justify-between rounded-lg border border-[#571B23]/10 bg-[rgba(255,229,229,1)] p-5">
 								<div className="flex flex-1 flex-col">
-									<p className="text-sm font-semibold text-[#9F2225]">{action?.error}</p>
+									<p className="text-sm font-semibold text-[#9F2225]">
+										{action?.error}
+									</p>
 								</div>
 							</div>
 						)}
@@ -64,7 +69,7 @@ export function SignupPage() {
 									}}
 								/>
 								{errors?.firstName && (
-									<p className="text-red-500 text-sm">
+									<p className="text-sm text-red-500">
 										{action?.errors?.firstName.join(', ')}
 									</p>
 								)}
@@ -89,7 +94,7 @@ export function SignupPage() {
 									}}
 								/>
 								{errors?.lastName && (
-									<p className="text-red-500 text-sm">
+									<p className="text-sm text-red-500">
 										{action?.errors?.lastName.join(', ')}
 									</p>
 								)}
@@ -114,7 +119,7 @@ export function SignupPage() {
 									}}
 								/>
 								{errors?.email && (
-									<p className="text-red-500 text-sm">
+									<p className="text-sm text-red-500">
 										{action?.errors?.email.join(', ')}
 									</p>
 								)}
@@ -139,7 +144,7 @@ export function SignupPage() {
 									}}
 								/>
 								{errors?.password && (
-									<p className="text-red-500 text-sm">
+									<p className="text-sm text-red-500">
 										{action?.errors?.password.join(', ')}
 									</p>
 								)}
@@ -164,8 +169,10 @@ export function SignupPage() {
 									}}
 								/>
 								{errors?.confirmPassword && (
-									<p className="text-red-500 text-sm">
-										{action?.errors?.confirmPassword.join(', ')}
+									<p className="text-sm text-red-500">
+										{action?.errors?.confirmPassword.join(
+											', '
+										)}
 									</p>
 								)}
 							</div>
