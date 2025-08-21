@@ -153,7 +153,7 @@ export function VerifyEmailPage() {
 			</div>
 			<div className="relative hidden lg:block">
 				<img
-					src="./images/login.jpg"
+					src="/images/login.jpg"
 					alt="Image"
 					className="absolute inset-0 h-full w-full object-cover"
 				/>

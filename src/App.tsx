@@ -2,12 +2,16 @@ import { createBrowserRouter, Navigate, RouterProvider } from 'react-router';
 import { LoginPage } from './pages/login';
 import { SignupPage } from './pages/signup';
 import { VerifyEmailPage } from './pages/verify-email';
+import { ForgotPasswordPage } from './pages/forgot-password';
+import { ResetPasswordPage } from './pages/reset-password';
 import { signupAction } from './features/signup/action';
 import { signupLoader } from './features/signup/loader';
 import { dashboardLoader } from './features/dashboard/loader';
 import { DashboardPage } from './pages/dashboard';
 import { logoutAction } from './features/logout/action';
 import { loginAction } from './features/login/action';
+import { forgotPasswordAction } from './features/forgot-password/action';
+import { resetPasswordAction } from './features/reset-password/action';
 
 function App() {
 	const router = createBrowserRouter([
@@ -36,6 +40,16 @@ function App() {
 			path: '/verify-email',
 			element: <VerifyEmailPage />,
 			loader: signupLoader,
+		},
+		{
+			path: '/forgot-password',
+			element: <ForgotPasswordPage />,
+			action: forgotPasswordAction,
+		},
+		{
+			path: '/reset-password/:token',
+			element: <ResetPasswordPage />,
+			action: resetPasswordAction,
 		},
 		{
 			path: '/logout',

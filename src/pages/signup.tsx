@@ -203,7 +203,7 @@ export function SignupPage() {
 			</div>
 			<div className="relative hidden lg:block">
 				<img
-					src="./images/login.jpg"
+					src="/images/login.jpg"
 					alt="Signup"
 					className="absolute inset-0 h-full w-full object-cover"
 				/>
