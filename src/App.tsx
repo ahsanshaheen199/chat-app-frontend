@@ -13,6 +13,8 @@ import { loginAction } from './features/login/action';
 import { forgotPasswordAction } from './features/forgot-password/action';
 import { resetPasswordAction } from './features/reset-password/action';
 import { MessagesPage } from './pages/messages';
+import { BlankMessage } from './features/messages/components/blank-message';
+import { messagesLoader } from './features/messages/loader';
 
 function App() {
 	const router = createBrowserRouter([
@@ -59,6 +61,17 @@ function App() {
 		{
 			path: '/messages',
 			element: <MessagesPage />,
+			loader: messagesLoader,
+			children: [
+				{
+					element: <BlankMessage />,
+					index: true,
+				},
+				{
+					path: ':conversationId',
+					element: <MessagesPage />,
+				},
+			],
 		},
 	]);
 

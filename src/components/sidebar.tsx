@@ -36,13 +36,14 @@ export function Sidebar() {
 					isSidebarClosed && 'gap-y-3'
 				)}
 			>
-				{menuItems.map((item) => (
+				{menuItems.map((item, index) => (
 					<Link
 						className={twMerge(
 							'group/menu-item hover:bg-bg-primary relative flex w-full items-center rounded-xl px-6 py-4 transition-colors duration-300',
 							isSidebarClosed && 'justify-center px-2 py-2'
 						)}
 						to={item.to}
+						key={index}
 					>
 						<div className="flex items-center gap-x-3">
 							{item.icon}
