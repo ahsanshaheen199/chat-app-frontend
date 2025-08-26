@@ -15,5 +15,16 @@ export interface Conversation {
 			id: string;
 			user: User;
 		}[];
+		messages: Message[];
 	};
 }
+
+export type Message = {
+	id: string;
+	content: string;
+	createdAt: Date;
+	conversationId: string;
+	sender: {
+		id: string;
+	};
+};

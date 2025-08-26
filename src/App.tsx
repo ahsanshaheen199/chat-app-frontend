@@ -15,6 +15,8 @@ import { resetPasswordAction } from './features/reset-password/action';
 import { MessagesPage } from './pages/messages';
 import { BlankMessage } from './features/messages/components/blank-message';
 import { messagesLoader } from './features/messages/loader';
+import { ConversationPage } from './pages/conversation';
+import { conversationLoader } from './features/conversation/loader';
 
 function App() {
 	const router = createBrowserRouter([
@@ -69,7 +71,8 @@ function App() {
 				},
 				{
 					path: ':conversationId',
-					element: <MessagesPage />,
+					element: <ConversationPage />,
+					loader: conversationLoader,
 				},
 			],
 		},

@@ -4,7 +4,7 @@ import { HeaderTop } from '../features/dashboard/components/header-top';
 
 export function Layout({ children }: { children: React.ReactNode }) {
 	return (
-		<div className="flex min-h-svh w-full flex-col bg-[#F4F4F4]">
+		<div className="flex h-screen w-full flex-col bg-[#F4F4F4]">
 			<SidebarContextProvider>
 				<HeaderTop />
 				<div className="mt-1 flex flex-1">
