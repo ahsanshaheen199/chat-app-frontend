@@ -1,21 +1,31 @@
 import { twMerge } from 'tailwind-merge';
 import { useSidebarContext } from '../contexts/sidebar-context';
-import { Link } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import { DashboardIcon } from './icons/dashboard';
 import { MessageIcon } from './icons/message';
 
-const menuItems = [
+const menuItems = (pathname: string) => [
 	{
 		label: 'Dashboard',
 		icon: (
-			<DashboardIcon className="text-secondary group-hover/menu-item:text-white" />
+			<DashboardIcon
+				className={twMerge(
+					'text-secondary group-hover/menu-item:text-white',
+					pathname === '/dashboard' && 'text-white'
+				)}
+			/>
 		),
-		to: '/',
+		to: '/dashboard',
 	},
 	{
 		label: 'Message',
 		icon: (
-			<MessageIcon className="text-secondary group-hover/menu-item:text-white" />
+			<MessageIcon
+				className={twMerge(
+					'text-secondary group-hover/menu-item:text-white',
+					pathname === '/messages' && 'text-white'
+				)}
+			/>
 		),
 		to: '/messages',
 	},
@@ -23,6 +33,8 @@ const menuItems = [
 
 export function Sidebar() {
 	const { isSidebarClosed } = useSidebarContext();
+	const location = useLocation();
+	const menuItemsWithPathname = menuItems(location.pathname);
 	return (
 		<div
 			className={twMerge(
@@ -36,11 +48,12 @@ export function Sidebar() {
 					isSidebarClosed && 'gap-y-3'
 				)}
 			>
-				{menuItems.map((item, index) => (
+				{menuItemsWithPathname.map((item, index) => (
 					<Link
 						className={twMerge(
 							'group/menu-item hover:bg-bg-primary relative flex w-full items-center rounded-xl px-6 py-4 transition-colors duration-300',
-							isSidebarClosed && 'justify-center px-2 py-2'
+							isSidebarClosed && 'justify-center px-2 py-2',
+							location.pathname === item.to && 'bg-bg-primary'
 						)}
 						to={item.to}
 						key={index}
@@ -52,7 +65,9 @@ export function Sidebar() {
 								className={twMerge(
 									'text-base font-bold transition-[opacity,color,visibility] duration-300',
 									'group-hover/menu-item:text-white',
-									isSidebarClosed ? 'hidden' : 'inline'
+									isSidebarClosed ? 'hidden' : 'inline',
+									location.pathname === item.to &&
+										'text-white'
 								)}
 							>
 								{item.label}
