@@ -1,46 +1,85 @@
-import { Form, Link, useActionData, useNavigation } from 'react-router';
+import { Link } from 'react-router';
 import { FormInput } from '../components/form/input';
 import { FormLabel } from '../components/form/label';
 import { Button } from '../components/form/button';
 import { useState } from 'react';
-import { useEffect } from 'react';
+import { socket } from '../lib/socket';
+import appAxios from '../lib/axios';
+import { authProvider } from '../features/auth';
+import { isAxiosError } from 'axios';
+import { useNavigate } from 'react-router';
 
 export function LoginPage() {
-	const action = useActionData() as {
-		error?: string;
-		errors?: Record<string, string[]>;
-	};
 	const [errors, setErrors] = useState<Record<string, string[]>>({});
 	const [showError, setShowError] = useState(false);
+	const [error, setError] = useState<string | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
+	const navigate = useNavigate();
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+		setError(null);
+		setErrors({});
+		setShowError(false);
+		setIsLoading(true);
+		e.preventDefault();
 
-	const navigation = useNavigation();
-	const isLoading = navigation.state === 'submitting';
+		const formData = new FormData(e.currentTarget);
+		const email = formData.get('email');
+		const password = formData.get('password');
 
-	useEffect(() => {
-		let errorTimeout: NodeJS.Timeout;
-		if (action?.error) {
-			if (action.errors) {
-				setErrors(action.errors);
-			}
+		if (!email) {
+			setErrors({ email: ['Email is required'] });
 			setShowError(true);
-			errorTimeout = setTimeout(() => {
-				setShowError(false);
-			}, 5000);
+			setIsLoading(false);
+			return;
 		}
 
-		return () => clearTimeout(errorTimeout);
-	}, [action]);
+		if (!password) {
+			setErrors({ password: ['Password is required'] });
+			setShowError(true);
+			setIsLoading(false);
+			return;
+		}
+
+		try {
+			const response = await appAxios.post('/api/auth/login', {
+				email,
+				password,
+			});
+
+			authProvider.user = response.data.data.user;
+			authProvider.isAuthenticated = true;
+			localStorage.setItem(
+				'user',
+				JSON.stringify(response.data.data.user)
+			);
+			socket.auth = {
+				userId: response.data.data.user.id,
+			};
+			socket.connect();
+
+			navigate('/dashboard');
+		} catch (error) {
+			if (isAxiosError(error)) {
+				setError(error.response?.data.message || 'Failed to login');
+			} else {
+				setError('Failed to login. Please try again.');
+			}
+			setShowError(true);
+		} finally {
+			setIsLoading(false);
+		}
+	};
 
 	return (
 		<div className="grid min-h-svh lg:grid-cols-2">
 			<div className="flex flex-col gap-4 p-6 md:p-10">
 				<div className="flex flex-1 items-center justify-center">
 					<div className="w-full max-w-sm">
-						{showError && action?.error && (
+						{showError && error && (
 							<div className="mb-5 flex w-full justify-between rounded-lg border border-[#571B23]/10 bg-[rgba(255,229,229,1)] p-5">
 								<div className="flex flex-1 flex-col">
 									<p className="text-sm font-semibold text-[#9F2225]">
-										{action?.error}
+										{error}
 									</p>
 								</div>
 							</div>
@@ -52,7 +91,7 @@ export function LoginPage() {
 							Enter your email and password to log in to your
 							account.
 						</p>
-						<Form method="post" action="/login" className="mt-8">
+						<form onSubmit={handleSubmit} className="mt-8">
 							<div className="mb-4 flex flex-col gap-y-2">
 								<FormLabel
 									htmlFor="email"
@@ -130,7 +169,7 @@ export function LoginPage() {
 									</Link>
 								</p>
 							</div>
-						</Form>
+						</form>
 					</div>
 				</div>
 			</div>

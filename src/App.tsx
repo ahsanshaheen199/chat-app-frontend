@@ -17,6 +17,7 @@ import { BlankMessage } from './features/messages/components/blank-message';
 import { messagesLoader } from './features/messages/loader';
 import { ConversationPage } from './pages/conversation';
 import { conversationLoader } from './features/conversation/loader';
+import { AuthContextProvider } from './contexts/auth-context';
 
 function App() {
 	const router = createBrowserRouter([
@@ -78,7 +79,11 @@ function App() {
 		},
 	]);
 
-	return <RouterProvider router={router} />;
+	return (
+		<AuthContextProvider>
+			<RouterProvider router={router} />
+		</AuthContextProvider>
+	);
 }
 
 export default App;
